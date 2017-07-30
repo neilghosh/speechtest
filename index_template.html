@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <style>
+        u {
+            color: red;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.bundle.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+    <script>
+        function markAsWrong(sword, htmlText1, htmlText2) {
+            spat1 = new RegExp(sword, "i")
+            rpat1 = "<u>" + sword + "</u>"
+            newWSize = rpat1.length
+            htmlP2 = htmlText2.replace(spat1, rpat1);
+            $("#p2").html(htmlText1 + htmlP2);
+            voiceHtml = htmlP1 + htmlP2
+        }
+
+        function getScores() {
+            $.get("/savescore", function (data) {
+                //alert(data);
+                renderScores(data);
+
+            });
+        }
+
+        function toggle() {
+            var x = document.getElementById('myChart');
+            var y = document.getElementById('scores');
+
+            if (x.style.display === 'none') {
+                x.style.display = 'block';
+                y.style.display = 'none';
+            } else {
+                x.style.display = 'none';
+                y.style.display = 'flex'
+            }
+
+        }
+
+        function renderScores(data) {
+            $('#scores').find('tbody').empty();
+
+            $((data.Scores).reverse()).each(function (index, element) {
+                var date = new Date(element.EntryTime);
+                $('#scores').find('tbody').append('<tr><td> ' + date.toUTCString() + ' </td> <td> ' + element.Score + ' </td></tr>');
+            })
+
+            pastScores = [];
+            pastDates = [];
+            var coloredScores = "<b>Previous scores : ";
+            for (var score in data.Scores.reverse()) {
+                scoreEntry = Math.round(data.Scores[score].Score);
+                if (scoreEntry < 60) {
+                    coloredScores = coloredScores + '<span style="color: red;">' + scoreEntry + '</span>&nbsp'
+                } else {
+                    coloredScores = coloredScores + '<span style="color: green;">' + scoreEntry + '</span>&nbsp'
+                }
+                pastScores.push(scoreEntry);
+                var date = new Date(data.Scores[score].EntryTime);
+                pastDates.push((date.getMonth() + 1).toString() + "/" + date.getDate().toString());
+            }
+            $('#pastScores').html(coloredScores + '</b>');
+            plot(pastScores, pastDates);
+
+        }
+
+        $(document).ready(function () {
+
+            getScores();
+            /*
+             $("#t1").keypress(function(){
+             //$("#p2").html($("#t1").val());
+             }) */
+
+            $("#save").click(function () {
+                // if ($.isNumeric($("#vpercent"))) {
+                $.post("/savescore?score=" + $("#vpercent").text(), function (data) {
+                    renderScores(data);
+                });
+                //}
+            });
+
+            var mytextbox = document.getElementById('t1');
+            var mydropdown = document.getElementById('dropdown');
+
+            mydropdown.onchange = function () {
+                mytextbox.innerHTML = this.value;
+            }
+
+            $("#rst").click(function () {
+                $("#p2").text("");
+                $("#vcount").text(0);
+                $("#ncorrect").text(0);
+                $("#nwrong").text(0);
+                $("#tcount").text("-");
+                $("#vpercent").text("-");
+            });
+
+            $("#sp").click(function () {
+                thresoldWordCount = 3;
+                correct = 0;
+                wrong = 0;
+                currTPos = 0;
+                currVPos = 0;
+                voiceText = $("#p2").text();
+                $("#p2").html(voiceText);
+                voiceHtml = $("#p2").html();
+                //pText=$("#p1").text();
+                pText = $("#t1").val().toLowerCase()
+                voiceWords = voiceText.split(/[\s,.;]+/)
+                vl = voiceWords.length
+                textWords = pText.split(/[\s,.;:\-]+/)
+                tl = textWords.length
+                if (textWords[tl - 1].trim() == "") tl = tl - 1;
+                if (voiceWords[vl - 1].trim() == "") vl = vl - 1;
+
+                for (i = 0; i < vl; i++) {
+                    currentWord = voiceWords[i].trim()
+                    if (currentWord != "") {
+                        wordVLocation = voiceHtml.indexOf(currentWord, currVPos);
+                        htmlP1 = voiceHtml.substring(0, wordVLocation);
+                        htmlP2 = voiceHtml.substring(wordVLocation);
+                        wordTLocation = pText.indexOf(currentWord.toLowerCase(), currTPos);
+                        newWSize = currentWord.length
+                        if (wordTLocation != -1) {
+                            gapLength = wordTLocation - currTPos;
+                            gapText = pText.substring(currTPos, wordTLocation).trim();
+                            gapWords = gapText.split(/[\s,.;:\-]+/);
+                            if (gapWords.length <= thresoldWordCount) {
+                                currTPos = wordTLocation + newWSize
+                                if (pText.charAt(currTPos).search(/[^\s,.;\-]/) == 0 || (wordTLocation > 0 && pText.charAt(wordTLocation - 1).search(/[^\s,.;\-]/) == 0)) {
+                                    wrong++;
+                                    markAsWrong(currentWord, htmlP1, htmlP2)
+                                    console.log("pre/post:" + currentWord + ":" + wordTLocation + ":" + currTPos);
+                                    thresoldWordCount++
+                                } else {
+                                    currTPos++
+                                    correct++;
+                                    misscount = 0;
+                                    thresoldWordCount = 3
+                                }
+                            } else {
+                                wrong++;
+                                markAsWrong(currentWord, htmlP1, htmlP2)
+                                console.log("Theshold:" + currentWord + ":" + wordTLocation + ":" + currTPos + ":" + gapText);
+                                misscount++
+                                thresoldWordCount++
+                            }
+                        } else {
+                            wrong++
+                            markAsWrong(currentWord, htmlP1, htmlP2)
+                            console.log("word Not found:" + currentWord + ":" + wordTLocation + ":" + currTPos);
+                            thresoldWordCount++
+                        }
+                        currVPos = wordVLocation + newWSize + 1
+                    }
+                }
+                $("#vcount").text(vl);
+                $("#ncorrect").text(correct);
+                $("#nwrong").text(wrong);
+                $("#tcount").text(tl);
+                $("#vpercent").text(parseFloat((correct / tl) * 100).toFixed(2));
+            });
+
+        })
+        ;
+        currTPos = 0;
+        currVPos = 0;
+    </script>
+    <script type="text/javascript">
+        var recognizing;
+        var recognition = new webkitSpeechRecognition();
+        recognition.continuous = true;
+        reset();
+        recognition.onend = reset;
+
+        recognition.onresult = function (event) {
+            var temp;
+            console.log(event.results.length)
+            console.log(event)
+            for (var i = event.resultIndex; i < event.results.length; ++i) {
+                if (event.results[i].isFinal) {
+                    temp = $("#p2").text();
+                    $("#p2").text(temp + event.results[i][0].transcript);
+                    console.log(event.results[i][0].transcript)
+                    //textarea.value += event.results[i][0].transcript;
+                }
+            }
+        }
+
+        function reset() {
+            recognizing = false;
+            $("#vrec").html("Click to Speak");
+        }
+
+        function toggleStartStop() {
+            if (recognizing) {
+                recognition.stop();
+                reset();
+            } else {
+                recognition.start();
+                recognizing = true;
+                $("#vrec").html("Click to Stop");
+            }
+        }
+    </script>
+    <script>
+        function plot(data, pastDates) {
+            var ctx = document.getElementById("myChart").getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: pastDates,
+                    datasets: [{
+                        label: "Your previous attempts",
+                        //new option, type will default to bar as that what is used to create the scale
+                        type: "line",
+                        fillColor: "rgba(220,220,220,0.2)",
+                        strokeColor: "rgba(220,220,220,1)",
+                        pointColor: "rgba(220,220,220,1)",
+                        pointStrokeColor: "#fff",
+                        pointHighlightFill: "#fff",
+                        pointHighlightStroke: "rgba(220,220,220,1)",
+                        data: data
+                    }, {
+                        label: "",
+                        //new option, type will default to bar as that what is used to create the scale
+                        type: "bar",
+                        fillColor: "rgba(220,20,220,0.2)",
+                        strokeColor: "rgba(220,20,220,1)",
+                        pointColor: "rgba(220,20,220,1)",
+                        pointStrokeColor: "#fff",
+                        pointHighlightFill: "#fff",
+                        pointHighlightStroke: "rgba(220,220,220,1)",
+                        data: data
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+        }
+
+    </script>
+</head>
+
+<body>
+<div id="header" style="position:relative;text-align:center;">
+    <!-- define relative so child absolute's are based on this elements origin -->
+    <div id="sampleLink" style="position:absolute;
+            background-color: LightBlue;
+            right:0px ;
+            text-align:right;
+            position:fixed;
+            margin-right: 10;
+            top:0;
+            left:0;
+            padding-right: 20px;
+            height:20px;">
+        {{ if .IsSightedIn }}
+        <b><A href="{{.SignInUrl}}">Welcome {{.User}} | Log Out</A></b> {{ else }}
+        <b><A href="{{.SignInUrl}}">Sign In</A></b> {{ end }}
+    </div>
+</div>
+<br>
+<center>
+    <p style="color:#0000FF;font-size: 20pt">Institute for Employment-Oriented Skill Development (IEOSD Skill Test -
+        Spoken English)
+        <br>This Test is Free of Cost
+    </p>
+</center>
+<div align="center" class="container-fluid">
+    <h3>Automated Fluency Test <br>
+        Paste your text to read below <br>(Use this test only with Google Chrome browser )
+    </h3> {{ if .IsSightedIn }}
+    Select Sample Text
+    <select id="dropdown">
+        <option value="">None</option>
+        {{ range $key, $value := .SampleTexts }}
+        <option value="{{ $value }}">{{ $key }}</option>
+        {{ end }}
+    </select>
+    <textarea class="form-control input-lg" id="t1" cols="60" rows="10"
+              placeholder="Welcome to IEOSD Skill Test (Spoken English)-Use this test only with Google Chrome browser - Product by IEOSD- Please paste your text or select from above list, and press the button `Click to Speak`. Once done, Click to Stop. Then Click on Evaluate button to see your score is below. If your score is less than 60%, you should consider using our software Spoken English-2020 and Spoken English for Engineers and Scientists to become fluent in professional English."></textarea>
+    {{ else }}
+    <button type="button" class="btn btn-primary btn-lg" onclick="location.href='{{ .SignInUrl }}'">Sign in to enter
+        text
+    </button>
+    {{ end }}
+    <br>
+    <p><samp id="p2"></samp></p>
+    <h3>If your score is less than 60%, you should consider using our software Spoken English-2020 and Spoken English
+        for Engineers and Scientists to become fluent in professional English.</h3>
+    <br>
+    <br>
+</div>
+<div>
+    <div style="display: inline-block" class="col-xs-12 col-sm-12 col-md-5">
+        <button id="vrec" onclick="toggleStartStop()" type="button" class="btn btn-primary btn-lg">Click to Speak
+        </button>
+        <button id='sp' type="button" class="btn btn-primary btn-lg">Evaluate</button>
+        <button id='save' type="button" class="btn btn-primary btn-lg">Save</button>
+        <button id='rst' type="button" class="btn btn-primary btn-lg">Clear Spoken Text</button>
+        <br>
+        <br>
+        <table class="table table-striped table-bordered">
+            <thead>
+            <tr>
+                <th colspan="2">Analysis</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <th>Total Words Uttered:</th>
+                <td><span id="vcount">0</span></td>
+            </tr>
+            <tr>
+                <th>Total Words Correct:</th>
+                <td><span id="ncorrect">0</span></td>
+            </tr>
+            <tr>
+                <th>Total Words Wrong:</th>
+                <td><span id="nwrong">0</span></td>
+            </tr>
+            <tr>
+                <th>Total Text Words:</th>
+                <td><span id="tcount">0</span></td>
+            </tr>
+            <tr>
+                <th>Percent of Correctness:</th>
+                <td><span id="vpercent">-</span></td>
+            </tr>
+            </tbody>
+        </table>
+
+
+    </div>
+    <div style="display: inline-block">
+        <div id="pastScores"></div>
+        <br>
+        <table width="600"  style="display: none;height: 250px" onclick="toggle()" id='scores'
+               class="table table-striped table-bordered">
+            <thead>
+            <tr>
+                <th colspan="2"> Your past scores
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <canvas id="myChart" width="600" height="300" onclick="toggle()"></canvas>
+    </div>
+</div>
+<hr>
+<h3 style="text-align: center">IEOSD Products</h3>
+
+<div>
+    <a href="https://s3.amazonaws.com/aws-website-spokenenglishcom-73ff4/index.html">
+        <IMG width="600" SRC="http://ecx.images-amazon.com/images/I/91yZ7jl0OiL._SL1500_.jpg">
+        <IMG width="600" SRC="http://ecx.images-amazon.com/images/I/91PGlGTrJqL._SL1500_.jpg">
+    </a>
+</div>
+
+<br>
+
+<br>
+<br>
+<center>Concept by IEOSD TEAM - "All rights reserved" -IEOSD
+</center>
+<center>Institute for Employment-Oriented Skill Development D.No: 1-161, Near Panchayathi office, Pedevadlapudi
+    Village
+    Mangalagiri Mandal , Guntur Dist , Pin code: 522 503 Land line:+91 8645 241141 website: www.ieosd.com email:
+    english.ieosd@gmail.com Contact No:+91 99633 78899 Whats app: +44 7808727816 +91 82976 46377 Product Information
+    /Sales Contact no : Srinivasa Rao 91 99633 78899
+</center>
+</center>
+<!-- Start of SimpleHitCounter Code -->
+<div align="center">
+    <a href="http://www.simplehitcounter.com" target="_blank"><img
+            src="http://simplehitcounter.com/hit.php?uid=2245826&f=16777215&b=0" border="0" height="18" width="83"
+            alt="web counter"></a>
+    <br><a href="http://www.simplehitcounter.com" target="_blank" style="text-decoration:none;">web counter</a>
+</div>
+</body>
+
+</html>

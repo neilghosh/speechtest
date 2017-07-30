@@ -1,0 +1,30 @@
+Test 01
+A silicon controlled rectifier or semiconductor-controlled rectifier is a four-layer solid-state current-controlling device. The principle of four layer p n p n switching was developed by Moll, Tanenbuam, Goldey and Holonyak of Bell Laboratories in 1956. The practical demonstration of silicon controlled switching and detailed theoretical behavior of a device in agreement with the experimental results was presented by Dr Ian M. Mackintosh of Bell Laboratories in January 1958. The name "silicon controlled rectifier" is General Electric's trade name for a type of thyristor.
+
+Test 02
+A general circulation model  is a type of climate model. It employs a mathematical model of the general circulation of a planetary atmosphere or ocean. It uses the Navier-Stokes equations on a rotating sphere with thermodynamic terms for various energy sources ( radiation, latent heat ). These equations are the basis for computer programs used to simulate the Earth's atmosphere or oceans. Atmospheric and oceanic GCMs ( AGCM and OGCM ) are key components along with sea ice and land-surface components. GCM was originally created by Syukuro Manabe and Kirk Bryan at the Geophysical Fluid Dynamics Laboratory in Princeton, New Jersey.
+
+Test 03
+A mechanism is a device designed to transform input forces and movement into a desired set of output forces and the movement. Mechanisms generally consist of moving components such as gears and gear trains, belt and chain drives, cam and follower mechanisms, and linkages as well as friction devices such as brakes and clutches, and structural components such as the frame, fasteners, bearings, springs, lubricants and seals, as well as a variety of specialized machine elements such as splines, pins and keys.
+
+Test 04
+Quantum mechanics also known as quantum physics or quantum theory, including quantum field theory, is a branch of physics which is the fundamental theory of nature at small scales and low energy levels of atoms and subatomic particles. Classical physics, the physics existing before quantum mechanics, derives from quantum mechanics as an approximation valid only at large scales.
+
+Test 05
+The fundamental operation of most CPUs, regardless of the physical form they take, is to execute a sequence of stored instructions that is called a program. The instructions to be executed are kept in some kind of computer memory. Nearly all CPUs follow the fetch, decode and execute steps in their operation, which are collectively known as the instruction cycle. ARM or Advanced RISC Machine, is a family of reduced instruction set computing  architectures for computer processors, configured for various environments.
+
+Test 06
+Deep learning is the application to learning tasks of artificial neural networks that contain more than one hidden layer. Deep learning is part of a broader family of machine learning methods based on learning data representations, as opposed to task specific algorithms. Learning can be supervised, partially supervised or unsupervised. TensorFlow is an open-source software library for machine learning across a range of tasks, and developed by Google to meet their needs for systems capable of building and training neural networks to detect and decipher patterns and correlations, analogous to the learning and reasoning which humans use.
+
+Test 07
+The alkali metals are a group or column) in the periodic table consisting of the chemical elements lithium, sodium, potassium, rubidium, cesium, and francium. This group lies in the s block of the periodic table of elements as all alkali metals have their outermost electron in an s orbital: this shared electron configuration results in them having very similar characteristic properties. Indeed, the alkali metals provide the best example of group trends in properties in the periodic table, with elements exhibiting well-characterised homologous behavior.
+
+Test 08
+Carbon nanotubes are allotropes of carbon with a cylindrical nanostructure. These cylindrical carbon molecules have unusual properties, which are valuable for nanotechnology, electronics, optics and other fields of materials science and technology. The strength and flexibility of carbon nanotubes makes them of potential use in controlling other nanoscale structures, which suggests they will have an important role in nanotechnology engineering. The highest tensile strength of an individual multi-walled carbon nanotube has been tested to be 63 GPa.
+
+Test 09
+Genetic engineering, also called genetic modification, is the direct manipulation of an organism's genome using biotechnology. It is a set of technologies used to change the genetic makeup of cells, including the transfer of genes within and across species boundaries to produce improved or novel organisms. Genetic engineering has many applications to medicine that include the manufacturing of drugs, creation of model animals that mimic human conditions and gene therapy. One of the earliest uses of genetic engineering was to mass-produce human insulin in bacteria.
+
+Test 10
+Gravitational waves are ripples in the curvature of spacetime that propagate as waves at the speed of light, generated in certain gravitational interactions that propagate outward from their source. The possibility of gravitational waves was discussed in 1893 by Oliver Heaviside using the analogy between the inverse-square law in gravitation and electricity. On February 11, 2016, the LIGO Scientific Collaboration and Virgo Collaboration teams announced that they had made the first observation of gravitational waves, originating from a pair of merging black holes using the Advanced LIGO detectors.
+
