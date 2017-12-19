@@ -9,6 +9,41 @@
         u {
             color: red;
         }
+        /* Style the tab */
+        .tab {
+            overflow: hidden;
+            border: 1px solid #ccc;
+            background-color: #f1f1f1;
+        }
+
+        /* Style the buttons that are used to open the tab content */
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+        }
+
+        /* Change background color of buttons on hover */
+        .tab button:hover {
+            background-color: #ddd;
+        }
+
+        /* Create an active/current tablink class */
+        .tab button.active {
+            background-color: #ccc;
+        }
+
+        /* Style the tab content */
+        .tabcontent {
+            display: none;
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+            border-top: none;
+        }
     </style>
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.bundle.min.js"></script>
@@ -16,6 +51,50 @@
             integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
             crossorigin="anonymous"></script>
     <script>
+        function openModule(evt, moduleName) {
+            // Declare all variables
+            var i, tabcontent, tablinks;
+
+            // Get all elements with class="tabcontent" and hide them
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+
+            // Get all elements with class="tablinks" and remove the class "active"
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+
+            // Show the current tab, and add an "active" class to the button that opened the tab
+            document.getElementById(moduleName).style.display = "block";
+            //$('#module1').style.display = "none";
+            evt.currentTarget.className += " active";
+        }
+        function isChrome() {
+          var isChromium = window.chrome,
+            winNav = window.navigator,
+            vendorName = winNav.vendor,
+            isOpera = winNav.userAgent.indexOf("OPR") > -1,
+            isIEedge = winNav.userAgent.indexOf("Edge") > -1,
+            isIOSChrome = winNav.userAgent.match("CriOS");
+
+          if (isIOSChrome) {
+            return true;
+          } else if (
+            isChromium !== null &&
+            typeof isChromium !== "undefined" &&
+            vendorName === "Google Inc." &&
+            isOpera === false &&
+            isIEedge === false
+          ) {
+            return true;
+          } else { 
+            return false;
+          }
+        }
+
         function markAsWrong(sword, htmlText1, htmlText2) {
             spat1 = new RegExp(sword, "i")
             rpat1 = "<u>" + sword + "</u>"
@@ -75,7 +154,17 @@
         }
 
         $(document).ready(function () {
+            //Check browser 
+            if(!isChrome()){
+                alert("This is browser is not supported yet. Please use Google Chrome."); 
+                $("#vrec").attr("disabled", "disabled");
+                $("#rst").attr("disabled", "disabled");
+                $("#save").attr("disabled", "disabled");
+                $("#sp").attr("disabled", "disabled");
+                $("#t1").attr("disabled", "disabled");
 
+            }
+            document.getElementById("defaultOpen").click();
             getScores();
             /*
              $("#t1").keypress(function(){
@@ -285,88 +374,101 @@
         <br>This Test is Free of Cost
     </p>
 </center>
-<div align="center" class="container-fluid">
-    <h3>Automated Fluency Test <br>
-        Paste your text to read below <br>(Use this test only with Google Chrome browser )
-    </h3> {{ if .IsSightedIn }}
-    Select Sample Text
-    <select id="dropdown">
-        <option value="">None</option>
-        {{ range $key, $value := .SampleTexts }}
-        <option value="{{ $value }}">{{ $key }}</option>
-        {{ end }}
-    </select>
-    <textarea class="form-control input-lg" id="t1" cols="60" rows="10"
-              placeholder="Welcome to IEOSD Skill Test (Spoken English)-Use this test only with Google Chrome browser - Product by IEOSD- Please paste your text or select from above list, and press the button `Click to Speak`. Once done, Click to Stop. Then Click on Evaluate button to see your score is below. If your score is less than 60%, you should consider using our software Spoken English-2020 and Spoken English for Engineers and Scientists to become fluent in professional English."></textarea>
-    {{ else }}
-    <button type="button" class="btn btn-primary btn-lg" onclick="location.href='{{ .SignInUrl }}'">Sign in to enter
-        text
-    </button>
-    {{ end }}
-    <br>
-    <p><samp id="p2"></samp></p>
-    <h3>If your score is less than 60%, you should consider using our software Spoken English-2020 and Spoken English
-        for Engineers and Scientists to become fluent in professional English.</h3>
-    <br>
-    <br>
+<div class="tab">
+    <button class="tablinks" onclick="openModule(event, 'module1')" id="defaultOpen" >Automated Fluency Test </button>
+    <button class="tablinks" onclick="openModule(event, 'module2')" >Listening Comprehension Skill</button>
+    <button class="tablinks" onclick="openModule(event, 'module3')" >Coming soon...</button>
 </div>
-<div>
-    <div style="display: inline-block" class="col-xs-12 col-sm-12 col-md-5">
-        <button id="vrec" onclick="toggleStartStop()" type="button" class="btn btn-primary btn-lg">Click to Speak
+<div id="module1" class="tabcontent">
+    <div align="center" class="container-fluid">
+        <h3><br>
+            Paste your text to read below <br>(Use this test only with Google Chrome browser )
+        </h3> {{ if .IsSightedIn }}
+        Select Sample Text
+        <select id="dropdown">
+            <option value="">None</option>
+            {{ range $key, $value := .SampleTexts }}
+            <option value="{{ $value }}">{{ $key }}</option>
+            {{ end }}
+        </select>
+        <textarea class="form-control input-lg" id="t1" cols="60" rows="10"
+                  placeholder="Welcome to IEOSD Skill Test (Spoken English)-Use this test only with Google Chrome browser - Product by IEOSD- Please paste your text or select from above list, and press the button `Click to Speak`. Once done, Click to Stop. Then Click on Evaluate button to see your score is below. If your score is less than 60%, you should consider using our software Spoken English-2020 and Spoken English for Engineers and Scientists to become fluent in professional English."></textarea>
+        {{ else }}
+        <button type="button" class="btn btn-primary btn-lg" onclick="location.href='{{ .SignInUrl }}'">Sign in to enter
+            text
         </button>
-        <button id='sp' type="button" class="btn btn-primary btn-lg">Evaluate</button>
-        <button id='save' type="button" class="btn btn-primary btn-lg">Save</button>
-        <button id='rst' type="button" class="btn btn-primary btn-lg">Clear Spoken Text</button>
+        {{ end }}
+        <br>
+        <p><samp id="p2"></samp></p>
+        <h3>If your score is less than 60%, you should consider using our software Spoken English-2020 and Spoken English
+            for Engineers and Scientists to become fluent in professional English.</h3>
         <br>
         <br>
-        <table class="table table-striped table-bordered">
-            <thead>
-            <tr>
-                <th colspan="2">Analysis</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <th>Total Words Uttered:</th>
-                <td><span id="vcount">0</span></td>
-            </tr>
-            <tr>
-                <th>Total Words Correct:</th>
-                <td><span id="ncorrect">0</span></td>
-            </tr>
-            <tr>
-                <th>Total Words Wrong:</th>
-                <td><span id="nwrong">0</span></td>
-            </tr>
-            <tr>
-                <th>Total Text Words:</th>
-                <td><span id="tcount">0</span></td>
-            </tr>
-            <tr>
-                <th>Percent of Correctness:</th>
-                <td><span id="vpercent">-</span></td>
-            </tr>
-            </tbody>
-        </table>
+    </div>
+    <div>
+        <div style="display: inline-block" class="col-xs-12 col-sm-12 col-md-5">
+            <button id="vrec" onclick="toggleStartStop()" type="button" class="btn btn-primary btn-lg">Click to Speak
+            </button>
+            <button id='sp' type="button" class="btn btn-primary btn-lg">Evaluate</button>
+            <button id='save' type="button" class="btn btn-primary btn-lg">Save</button>
+            <button id='rst' type="button" class="btn btn-primary btn-lg">Clear Spoken Text</button>
+            <br>
+            <br>
+            <table class="table table-striped table-bordered">
+                <thead>
+                <tr>
+                    <th colspan="2">Analysis</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th>Total Words Uttered:</th>
+                    <td><span id="vcount">0</span></td>
+                </tr>
+                <tr>
+                    <th>Total Words Correct:</th>
+                    <td><span id="ncorrect">0</span></td>
+                </tr>
+                <tr>
+                    <th>Total Words Wrong:</th>
+                    <td><span id="nwrong">0</span></td>
+                </tr>
+                <tr>
+                    <th>Total Text Words:</th>
+                    <td><span id="tcount">0</span></td>
+                </tr>
+                <tr>
+                    <th>Percent of Correctness:</th>
+                    <td><span id="vpercent">-</span></td>
+                </tr>
+                </tbody>
+            </table>
 
 
+        </div>
+        <div style="display: inline-block">
+            <div id="pastScores"></div>
+            <br>
+            <table width="600"  style="display: none;height: 250px" onclick="toggle()" id='scores'
+                   class="table table-striped table-bordered">
+                <thead>
+                <tr>
+                    <th colspan="2"> Your past scores
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <canvas id="myChart" width="600" height="300" onclick="toggle()"></canvas>
+        </div>
     </div>
-    <div style="display: inline-block">
-        <div id="pastScores"></div>
-        <br>
-        <table width="600"  style="display: none;height: 250px" onclick="toggle()" id='scores'
-               class="table table-striped table-bordered">
-            <thead>
-            <tr>
-                <th colspan="2"> Your past scores
-                </th>
-            </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
-        <canvas id="myChart" width="600" height="300" onclick="toggle()"></canvas>
-    </div>
+</div>    
+<div id="module2" class="tabcontent">
+     content 
+</div>
+<div id="module3" class="tabcontent">
+    Module 3 content 
 </div>
 <hr>
 <h3 style="text-align: center">IEOSD Products</h3>
