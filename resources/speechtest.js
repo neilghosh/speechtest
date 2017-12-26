@@ -1,6 +1,5 @@
 function setupReadings() {
     var mydropdown = document.getElementById('ListeningTests');
-    var readings = []
     //var audio = document.getElementById('audioPlayer');
     //var audioPlayer = $('#audioPlayer');
     var video = videojs('audioPlayer');
@@ -14,25 +13,30 @@ function setupReadings() {
             //alert(JSON.stringify(result))
             for (var i = 0; i < result.length; i++) {
                 var key = result[i].key;
-                readings[key] = result[i];
+                globalReadings[key] = result[i];
                 mydropdown.options[mydropdown.options.length] = new Option(key);
             }
+            mydropdown.selectedIndex = 0; 
+            mydropdown.onchange();
         }
     });
-    globalReadings = readings;
+
     mydropdown.onchange = function() {
-        var reading = readings[this.value]
+        var reading = globalReadings[this.value]
+        questionNo = 0;
+        listningScore = 0;
         document.getElementById('qtitle').innerHTML = reading.title;
         //var source = document.getElementById('audioSource');
 
         video.src('resources/audio/' + reading.Audio);
         //source.src = 'resources/audio/'+reading.Audio;
         video.on("ended", funcName = function() {
-            showQuestions(reading.questions, 0)
+            showQuestions(reading.questions, questionNo);
+            document.getElementById("submitAns").disabled = false;
         }, false);
-        document.getElementById("submitAns").disabled = false;
         //audio.load(); //call this to just preload the audio without playing
     }
+
 }
 
 function showQuestions(questions, i) {
