@@ -21,6 +21,15 @@
           "C": "Adding layers to build a part"
         },
         "answer": "C"
+      },
+      {
+        "question": "What disadvantage 3D printing may have?",
+        "options": {
+          "A": "Waste of materials, e.g., polymer and ceramic ",
+          "B": "Slow in producing simmple parts",
+          "C": "Special tooling needed for each CAD model"
+        },
+        "answer": "B"
       }
     ]
   }
