@@ -1,3 +1,90 @@
+function setupReadings() {
+    var mydropdown = document.getElementById('ListeningTests');
+    var readings = []
+    //var audio = document.getElementById('audioPlayer');
+    //var audioPlayer = $('#audioPlayer');
+    var video = videojs('audioPlayer');
+    video.on("seeked", function(event) {
+        audioPlayer.currentTime = audioPlayer.currentTime;
+    });
+    // });
+    $.ajax({
+        url: "getReadings",
+        success: function(result) {
+            //alert(JSON.stringify(result))
+            for (var i = 0; i < result.length; i++) {
+                var key = result[i].key;
+                readings[key] = result[i];
+                mydropdown.options[mydropdown.options.length] = new Option(key);
+            }
+        }
+    });
+    globalReadings = readings;
+    mydropdown.onchange = function() {
+        var reading = readings[this.value]
+        document.getElementById('qtitle').innerHTML = reading.title;
+        //var source = document.getElementById('audioSource');
+
+        video.src('resources/audio/' + reading.Audio);
+        //source.src = 'resources/audio/'+reading.Audio;
+        video.on("ended", funcName = function() {
+            showQuestions(reading.questions, 0)
+        }, false);
+        document.getElementById("submitAns").disabled = false;
+        //audio.load(); //call this to just preload the audio without playing
+    }
+}
+
+function showQuestions(questions, i) {
+    document.getElementById('question').innerHTML = questions[i].question;
+    document.getElementById('answer').value = questions[i].answer;
+    var foo = document.getElementById("options");
+    //Remove the options from the old question
+    while (foo.firstChild) {
+     foo.removeChild(foo.firstChild);
+    }
+    for (var option in questions[i].options) {
+        var element = document.createElement("input");
+        element.setAttribute("type", 'radio');
+        element.setAttribute("value", option);
+        element.setAttribute("name", 'option');
+        //element.setAttribute("id", 'r' + i);
+        foo.appendChild(element);
+
+        element = document.createElement("label");
+        element.setAttribute("for", 'r' + i);
+        element.innerHTML = "&nbsp" + option + ". " + questions[i].options[option];
+        foo.appendChild(element);
+
+        var br = document.createElement('br');
+        foo.appendChild(br);
+    }
+}
+
+function submitAns() {
+    var userAns =  $("input[name=option]:checked").val();
+    var answer = document.getElementById("answer").value;
+    var key = document.getElementById('ListeningTests').value;
+    if(userAns == answer){
+        listningScore++;
+    }
+    if(++questionNo < globalReadings[key].questions.length) {
+        nextQuestion();
+    } else{
+        saveModule2Score();
+    }
+}
+
+function saveModule2Score() {
+    alert("Saving Module 2 score"+ listningScore);
+}
+
+function nextQuestion() {
+    key = document.getElementById('ListeningTests').value;
+    questions = globalReadings[key].questions;
+    showQuestions(questions, questionNo);
+}
+
 function plot(data, pastDates) {
     var ctx = document.getElementById("myChart").getContext('2d');
     var myChart = new Chart(ctx, {
@@ -60,28 +147,38 @@ function openModule(evt, moduleName) {
     document.getElementById(moduleName).style.display = "block";
     //$('#module1').style.display = "none";
     evt.currentTarget.className += " active";
-}
-function isChrome() {
-  var isChromium = window.chrome,
-    winNav = window.navigator,
-    vendorName = winNav.vendor,
-    isOpera = winNav.userAgent.indexOf("OPR") > -1,
-    isIEedge = winNav.userAgent.indexOf("Edge") > -1,
-    isIOSChrome = winNav.userAgent.match("CriOS");
 
-  if (isIOSChrome) {
-    return true;
-  } else if (
-    isChromium !== null &&
-    typeof isChromium !== "undefined" &&
-    vendorName === "Google Inc." &&
-    isOpera === false &&
-    isIEedge === false
-  ) {
-    return true;
-  } else { 
-    return false;
-  }
+    //Module specific actions
+    switch (moduleName) {
+        case 'module2':
+            setupReadings();
+            break;
+        default:
+    }
+
+}
+
+function isChrome() {
+    var isChromium = window.chrome,
+        winNav = window.navigator,
+        vendorName = winNav.vendor,
+        isOpera = winNav.userAgent.indexOf("OPR") > -1,
+        isIEedge = winNav.userAgent.indexOf("Edge") > -1,
+        isIOSChrome = winNav.userAgent.match("CriOS");
+
+    if (isIOSChrome) {
+        return true;
+    } else if (
+        isChromium !== null &&
+        typeof isChromium !== "undefined" &&
+        vendorName === "Google Inc." &&
+        isOpera === false &&
+        isIEedge === false
+    ) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 function markAsWrong(sword, htmlText1, htmlText2) {
@@ -94,7 +191,7 @@ function markAsWrong(sword, htmlText1, htmlText2) {
 }
 
 function getScores() {
-    $.get("/savescore", function (data) {
+    $.get("/savescore", function(data) {
         //alert(data);
         renderScores(data);
 
@@ -118,7 +215,7 @@ function toggle() {
 function renderScores(data) {
     $('#scores').find('tbody').empty();
 
-    $((data.Scores).reverse()).each(function (index, element) {
+    $((data.Scores).reverse()).each(function(index, element) {
         var date = new Date(element.EntryTime);
         $('#scores').find('tbody').append('<tr><td> ' + date.toUTCString() + ' </td> <td> ' + element.Score + ' </td></tr>');
     })
@@ -142,10 +239,10 @@ function renderScores(data) {
 
 }
 
-$(document).ready(function () {
+$(document).ready(function() {
     //Check browser 
-    if(!isChrome()){
-        alert("This is browser is not supported yet. Please use Google Chrome."); 
+    if (!isChrome()) {
+        alert("This is browser is not supported yet. Please use Google Chrome.");
         $("#vrec").attr("disabled", "disabled");
         $("#rst").attr("disabled", "disabled");
         $("#save").attr("disabled", "disabled");
@@ -155,14 +252,17 @@ $(document).ready(function () {
     }
     document.getElementById("defaultOpen").click();
     getScores();
+
+
+
     /*
      $("#t1").keypress(function(){
      //$("#p2").html($("#t1").val());
      }) */
 
-    $("#save").click(function () {
+    $("#save").click(function() {
         // if ($.isNumeric($("#vpercent"))) {
-        $.post("/savescore?score=" + $("#vpercent").text(), function (data) {
+        $.post("/savescore?score=" + $("#vpercent").text(), function(data) {
             renderScores(data);
         });
         //}
@@ -171,11 +271,11 @@ $(document).ready(function () {
     var mytextbox = document.getElementById('t1');
     var mydropdown = document.getElementById('dropdown');
 
-    mydropdown.onchange = function () {
+    mydropdown.onchange = function() {
         mytextbox.innerHTML = this.value;
     }
 
-    $("#rst").click(function () {
+    $("#rst").click(function() {
         $("#p2").text("");
         $("#vcount").text(0);
         $("#ncorrect").text(0);
@@ -184,7 +284,7 @@ $(document).ready(function () {
         $("#vpercent").text("-");
     });
 
-    $("#sp").click(function () {
+    $("#sp").click(function() {
         thresoldWordCount = 3;
         correct = 0;
         wrong = 0;
@@ -250,7 +350,9 @@ $(document).ready(function () {
         $("#vpercent").text(parseFloat((correct / tl) * 100).toFixed(2));
     });
 
-})
-;
+});
 currTPos = 0;
 currVPos = 0;
+    var listningScore = 0;
+    var questionNo = 0;
+    var globalReadings = [];

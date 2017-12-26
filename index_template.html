@@ -3,8 +3,9 @@
 
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link href="https://vjs.zencdn.net/5.19/video-js.min.css" rel="stylesheet">
+    <script src="https://vjs.zencdn.net/5.19/video.min.js"></script>
     <link rel="stylesheet" type="text/css" href="resources/style.css"/>
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.bundle.min.js"></script>
@@ -12,6 +13,7 @@
             integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
             crossorigin="anonymous"></script>
     <script src="resources/speechtest.js"></script>
+
     <script type="text/javascript">
         var recognizing;
         var recognition = new webkitSpeechRecognition();
@@ -167,8 +169,31 @@
     </div>
 </div>    
 <div id="module2" class="tabcontent">
-    <h3> Please select a test, carefully listen to the Audio, then answer the 5 questions by clicking on the correct answer. </h3> 
-    Coming Soon...
+    <h4> Please select a test, carefully listen to the Audio, then answer the 5 questions by clicking on the correct answer. </h4> 
+    <center>
+        <select id="ListeningTests">
+            <option value="">None</option>
+        </select>
+    </center>
+    <h4 id="qtitle"></h4>
+    <hr>
+<!--     <audio id='audioPlayer' controls="controls">
+      <source id='audioSource' src="horse.mp3" type="audio/mpeg"></source>
+        Your browser does not support the audio element.
+    </audio> -->
+    <audio id="audioPlayer" class="video-js vjs-default-skin" controls preload="auto" 
+      width="400" height="70" poster="" data-setup='{}'>
+      <source id='audioSource' src="" type='audio/mp3'/>
+    </audio>
+    <div id='questions'>
+        <h4 id=question></h4>
+        <b>Options</b>
+        <form id="options">   
+        </form>
+        <input type="hidden" id="answer">    
+        <button id="submitAns" disabled="disabled" onclick="submitAns()" type="button" class="btn btn-primary btn-lg">Submit
+        </button>
+    </div>
 </div>
 <div id="module3" class="tabcontent">
     Coming Soonish....

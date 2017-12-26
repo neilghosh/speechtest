@@ -14,6 +14,7 @@ import (
 	"encoding/json"
 	"os"
 	"bufio"
+	"io/ioutil"
 )
 
 type UserSession struct {
@@ -38,9 +39,21 @@ type Data struct {
 	SignInUrl   string
 }
 
+type Reading  struct {
+	Key       string `json:"key"`
+	Title     string `json:"title"`
+	Audio	  string `json:audio"`
+	Questions []struct {
+		Question string `json:"question"`
+		Options  map[string]string `json:"options"`
+		Answer string `json:"answer"`
+	} `json:"questions"`
+}
+
 func init() {
 	http.HandleFunc("/", handler)
 	http.HandleFunc("/savescore", saveScore)
+	http.HandleFunc("/getReadings", getReadings)
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
@@ -150,6 +163,27 @@ func saveScore(w http.ResponseWriter, r *http.Request) {
 	} else {
 		log.Infof(ctx, "User not logged in")
 	}
+}
+
+func getReadings(w http.ResponseWriter, r *http.Request) {
+	ctx := appengine.NewContext(r)
+	w.Header().Set("Content-Type", "application/json")	
+	log.Infof(ctx, "Reading the readings from json")
+	var jsonBytes = getJSON()
+	var readings []Reading;
+    json.Unmarshal(jsonBytes, &readings);
+    log.Infof(ctx, "Read %d Readings.",len(readings))
+    out, _ := json.Marshal(readings)
+    w.Write(out);
+}
+
+func getJSON() []byte{
+    raw, err := ioutil.ReadFile("./readings.json")
+    if err != nil {
+        fmt.Println(err.Error())
+        os.Exit(1)
+    }
+    return raw;
 }
 
 func readLines(path string) ([]string, error) {
