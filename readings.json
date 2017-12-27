@@ -32,5 +32,73 @@
         "answer": "B"
       }
     ]
+  },
+  {
+    "key": "Test2",
+    "title": "OOP",
+    "audio": "2_OOP.mp3",
+    "questions": [
+      {
+        "question": "What is the advantage of Object-Oriented Programming over procedural programming (PP)",
+        "options": {
+          "A": "It runs faster than procedural programming",
+          "B": "Code reusability saves time in development",
+          "C": "Code is always smaller and more efficient than in PP"
+        },
+        "answer": "B"
+      },
+      {
+        "question": "What is inheritance in OOP",
+        "options": {
+          "A": "A child class is derived from a parent object",
+          "B": "An Object is derived from a parent class and inherits all properties",
+          "C": "A class is derived from another class"
+        },
+        "answer": "C"
+      },
+      {
+        "question": "What is polymorphism in OOP",
+        "options": {
+          "A": "The same method in different Objects (of the same class) can perform different tasks",
+          "B": "SDifferent classes derived from the same parent class can easily morph/transform into each other",
+          "C": "An object derived from a class can transform into another object during runtime or compiling"
+        },
+        "answer": "A"
+      }
+    ]
+  },
+  {
+    "key": "Test3",
+    "title": "Artificial Intelligence Based medical Diagnosis App",
+    "audio": "3_AI-basedMedicalDiagnosis.mp3",
+    "questions": [
+      {
+        "question": "Dr. Shantanu Nundy is the director of",
+        "options": {
+          "A": "Scientific American",
+          "B": "Human Diagnosis Project",
+          "C": "American Medical Association"
+        },
+        "answer": "B"
+      },
+      {
+        "question": "This AI-based App does the following",
+        "options": {
+          "A": "Suggests the medication for patients",
+          "B": "Analyzes the blood test results for diagnostics",
+          "C": "Analyzes advice from many physicians"
+        },
+        "answer": "C"
+      },
+      {
+        "question": "Human Dx is",
+        "options": {
+          "A": "An App to replace the physicians",
+          "B": "An organization of physicians",
+          "C": "An AI program to analyze Human DNA"
+        },
+        "answer": "B"
+      }
+    ]
   }
 ]
