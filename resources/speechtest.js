@@ -58,6 +58,7 @@ function setupReadings() {
             video.on("ended", funcName = function() {
                 saveReadings(key, true, 0, false);
                 showQuestions(reading.questions, questionNo);
+                document.getElementById('audioPlayer').style.visibility = 'hidden';
             }, false);
             clearOptions();
             if(reading.AudioComplete) {
@@ -119,7 +120,7 @@ function submitAns() {
 }
 
 function saveModule2Score(key, listningScore) {
-    alert("Saving Module 2 score"+ listningScore);
+    alert("Saving Module 2 score "+ listningScore);
     saveReadings(key, true,listningScore, true)
 }
 
@@ -244,7 +245,6 @@ function getScores() {
 
 function saveReadings(key, audioComplete, score, completed) {
     $.get("/saveReadings?audioComplete="+audioComplete+"&key="+key+"&score="+score+"&completed="+completed, function(data) {
-        alert("Saved");
         clearOptions();
     });
 }
