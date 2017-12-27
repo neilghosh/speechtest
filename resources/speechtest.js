@@ -1,11 +1,29 @@
 function setupReadings() {
     var mydropdown = document.getElementById('ListeningTests');
+    document.getElementById('audioPlayer').style.visibility = 'hidden';
+
     //var audio = document.getElementById('audioPlayer');
     //var audioPlayer = $('#audioPlayer');
     var video = videojs('audioPlayer');
-    video.on("seeked", function(event) {
-        audioPlayer.currentTime = audioPlayer.currentTime;
-    });
+    myPlayer = video;
+    var currentTime = 0;
+    myPlayer.on("seeking", function(event) {
+          if (currentTime > myPlayer.currentTime()) {
+            myPlayer.currentTime(currentTime);
+          }
+        });
+
+        myPlayer.on("seeked", function(event) {
+          if (currentTime > myPlayer.currentTime()) {
+            myPlayer.currentTime(currentTime);
+          }
+        });
+
+        setInterval(function() {
+          if (!myPlayer.paused()) {
+            currentTime = myPlayer.currentTime();
+          }
+        }, 1000);
     // });
     $.ajax({
         url: "getReadings",
@@ -14,7 +32,12 @@ function setupReadings() {
             for (var i = 0; i < result.length; i++) {
                 var key = result[i].key;
                 globalReadings[key] = result[i];
-                mydropdown.options[mydropdown.options.length] = new Option(key);
+                var completed = result[i].Completed;
+                var option = new Option(key);
+                if(completed) {
+                    option.setAttribute("disabled","disabled");
+                }
+                mydropdown.options[mydropdown.options.length] = option;
             }
             mydropdown.selectedIndex = 0; 
             mydropdown.onchange();
@@ -22,31 +45,46 @@ function setupReadings() {
     });
 
     mydropdown.onchange = function() {
-        var reading = globalReadings[this.value]
+        var key = this.value;
+        var reading = globalReadings[key]
         questionNo = 0;
         listningScore = 0;
-        document.getElementById('qtitle').innerHTML = reading.title;
-        //var source = document.getElementById('audioSource');
+        if(reading != null){
+             document.getElementById('qtitle').innerHTML = reading.title;
+            //var source = document.getElementById('audioSource');
 
-        video.src('resources/audio/' + reading.Audio);
-        //source.src = 'resources/audio/'+reading.Audio;
-        video.on("ended", funcName = function() {
-            showQuestions(reading.questions, questionNo);
-            document.getElementById("submitAns").disabled = false;
-        }, false);
-        //audio.load(); //call this to just preload the audio without playing
+            video.src('resources/audio/' + reading.Audio);
+            //source.src = 'resources/audio/'+reading.Audio;
+            video.on("ended", funcName = function() {
+                saveReadings(key, true, 0, false);
+                showQuestions(reading.questions, questionNo);
+            }, false);
+            clearOptions();
+            if(reading.AudioComplete) {
+                document.getElementById('altaudiotext').innerHTML = 'You have heard the audio already';
+                document.getElementById('audioPlayer').style.visibility = 'hidden';
+                showQuestions(reading.questions, questionNo);
+            } else{
+                document.getElementById('altaudiotext').innerHTML = 'Click play button to listen to the audio clip.';
+                document.getElementById('audioPlayer').style.visibility = 'visible';
+            }
+            //audio.load(); //call this to just preload the audio without playing       
+        }
     }
-
 }
 
-function showQuestions(questions, i) {
-    document.getElementById('question').innerHTML = questions[i].question;
-    document.getElementById('answer').value = questions[i].answer;
+function clearOptions(){
     var foo = document.getElementById("options");
     //Remove the options from the old question
     while (foo.firstChild) {
      foo.removeChild(foo.firstChild);
     }
+}
+function showQuestions(questions, i) {
+    document.getElementById('question').innerHTML = questions[i].question;
+    document.getElementById('answer').value = questions[i].answer;
+    clearOptions();
+    var foo = document.getElementById("options");
     for (var option in questions[i].options) {
         var element = document.createElement("input");
         element.setAttribute("type", 'radio');
@@ -63,6 +101,7 @@ function showQuestions(questions, i) {
         var br = document.createElement('br');
         foo.appendChild(br);
     }
+    document.getElementById("submitAns").disabled = false;
 }
 
 function submitAns() {
@@ -75,12 +114,13 @@ function submitAns() {
     if(++questionNo < globalReadings[key].questions.length) {
         nextQuestion();
     } else{
-        saveModule2Score();
+        saveModule2Score(key,listningScore);
     }
 }
 
-function saveModule2Score() {
+function saveModule2Score(key, listningScore) {
     alert("Saving Module 2 score"+ listningScore);
+    saveReadings(key, true,listningScore, true)
 }
 
 function nextQuestion() {
@@ -202,6 +242,13 @@ function getScores() {
     });
 }
 
+function saveReadings(key, audioComplete, score, completed) {
+    $.get("/saveReadings?audioComplete="+audioComplete+"&key="+key+"&score="+score+"&completed="+completed, function(data) {
+        alert("Saved");
+        clearOptions();
+    });
+}
+
 function toggle() {
     var x = document.getElementById('myChart');
     var y = document.getElementById('scores');
@@ -218,7 +265,9 @@ function toggle() {
 
 function renderScores(data) {
     $('#scores').find('tbody').empty();
-
+    if(data.Scores == null){
+        return 
+    }
     $((data.Scores).reverse()).each(function(index, element) {
         var date = new Date(element.EntryTime);
         $('#scores').find('tbody').append('<tr><td> ' + date.toUTCString() + ' </td> <td> ' + element.Score + ' </td></tr>');

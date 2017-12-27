@@ -73,7 +73,7 @@
 </div>
 <br>
 <center>
-    <p style="color:#0000FF;font-size: 20pt">Institute for Employment-Oriented Skill Development (IEOSD Skill Test -
+    <p style="color:#0000FF;font-size: 10pt">Institute for Employment-Oriented Skill Development (IEOSD Skill Test -
         Spoken English)
         <br>This Test is Free of Cost
     </p>
@@ -85,9 +85,9 @@
 </div>
 <div id="module1" class="tabcontent">
     <div align="center" class="container-fluid">
-        <h3><br>
-            Paste your text to read below <br>(Use this test only with Google Chrome browser )
-        </h3> {{ if .IsSightedIn }}
+        <h5><br>
+            Use this test only with Google Chrome browser 
+        </h5> {{ if .IsSightedIn }}
         Select Sample Text
         <select id="dropdown">
             <option value="">None</option>
@@ -98,24 +98,24 @@
         <textarea class="form-control input-lg" id="t1" cols="60" rows="10"
                   placeholder="Welcome to IEOSD Skill Test (Spoken English)-Use this test only with Google Chrome browser - Product by IEOSD- Please paste your text or select from above list, and press the button `Click to Speak`. Once done, Click to Stop. Then Click on Evaluate button to see your score is below. If your score is less than 60%, you should consider using our software Spoken English-2020 and Spoken English for Engineers and Scientists to become fluent in professional English."></textarea>
         {{ else }}
-        <button type="button" class="btn btn-primary btn-lg" onclick="location.href='{{ .SignInUrl }}'">Sign in to enter
+        <button type="button" class="btn btn-primary btn-md" onclick="location.href='{{ .SignInUrl }}'">Sign in to enter
             text
         </button>
         {{ end }}
         <br>
         <p><samp id="p2"></samp></p>
-        <h3>If your score is less than 60%, you should consider using our software Spoken English-2020 and Spoken English
-            for Engineers and Scientists to become fluent in professional English.</h3>
+        <h5>If your score is less than 60%, you should consider using our software Spoken English-2020 and Spoken English
+            for Engineers and Scientists to become fluent in professional English.</h5>
         <br>
         <br>
     </div>
     <div>
         <div style="display: inline-block" class="col-xs-12 col-sm-12 col-md-5">
-            <button id="vrec" onclick="toggleStartStop()" type="button" class="btn btn-primary btn-lg">Click to Speak
+            <button id="vrec" onclick="toggleStartStop()" type="button" class="btn btn-primary btn-md">Click to Speak
             </button>
-            <button id='sp' type="button" class="btn btn-primary btn-lg">Evaluate</button>
-            <button id='save' type="button" class="btn btn-primary btn-lg">Save</button>
-            <button id='rst' type="button" class="btn btn-primary btn-lg">Clear Spoken Text</button>
+            <button id='sp' type="button" class="btn btn-primary btn-md">Evaluate</button>
+            <button id='save' type="button" class="btn btn-primary btn-md">Save</button>
+            <button id='rst' type="button" class="btn btn-primary btn-md">Clear Spoken Text</button>
             <br>
             <br>
             <table class="table table-striped table-bordered">
@@ -169,28 +169,26 @@
     </div>
 </div>    
 <div id="module2" class="tabcontent">
-    <h4> Please select a test, carefully listen to the Audio, then answer the 5 questions by clicking on the correct answer. </h4> 
+    <h5> Please select a test, carefully listen to the Audio, then answer the 5 questions by clicking on the correct answer. </h5> 
     <center>
         <select id="ListeningTests">
+            <option>None</option>
         </select>
     </center>
     <h4 id="qtitle"></h4>
     <hr>
-<!--     <audio id='audioPlayer' controls="controls">
-      <source id='audioSource' src="horse.mp3" type="audio/mpeg"></source>
-        Your browser does not support the audio element.
-    </audio> -->
-    <audio id="audioPlayer" class="video-js vjs-default-skin" controls preload="auto" 
-      width="400" height="70" poster="" data-setup='{}'>
-      <source id='audioSource' src="" type='audio/mp3'/>
-    </audio>
+    <h5 id="altaudiotext"></h5>
+    <video preload="none" id="audioPlayer" class="video-js vjs-default-skin" controls preload="auto" 
+      width="400" height="70" poster="" data-setup='{}' >
+      <source id='audioSource'   type='audio/mp3'/>
+    </video>
     <div id='questions'>
-        <h4 id=question></h4>
-        <b>Options</b>
+        <h5 id=question></h5>
+        <h6 id="optionLabel">Options</h6>
         <form id="options">   
         </form>
         <input type="hidden" id="answer">    
-        <button id="submitAns" disabled="disabled" onclick="submitAns()" type="button" class="btn btn-primary btn-lg">Submit
+        <button id="submitAns" disabled="disabled" onclick="submitAns()" type="button" class="btn btn-primary btn-md">Submit
         </button>
     </div>
 </div>
@@ -198,14 +196,6 @@
     Coming Soonish....
 </div>
 <hr>
-<h3 style="text-align: center">IEOSD Products</h3>
-
-<div>
-    <a href="https://s3.amazonaws.com/aws-website-spokenenglishcom-73ff4/index.html">
-        <IMG width="600" SRC="http://ecx.images-amazon.com/images/I/91yZ7jl0OiL._SL1500_.jpg">
-        <IMG width="600" SRC="http://ecx.images-amazon.com/images/I/91PGlGTrJqL._SL1500_.jpg">
-    </a>
-</div>
 
 <br>
 

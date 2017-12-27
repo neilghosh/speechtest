@@ -32,6 +32,18 @@ type UserScores  struct {
 	Scores   []ScoreEntry
 }
 
+type UserReadings  struct {
+	UserName string
+	ReadingTests []ReadingTest
+}
+
+type ReadingTest struct {
+	TestKey string
+	AudioComplete bool
+	Score   int64
+	Completed bool
+}
+
 type Data struct {
 	SampleTexts map[string]string
 	User        string
@@ -48,12 +60,15 @@ type Reading  struct {
 		Options  map[string]string `json:"options"`
 		Answer string `json:"answer"`
 	} `json:"questions"`
+	AudioComplete bool;
+	Completed bool;
 }
 
 func init() {
 	http.HandleFunc("/", handler)
 	http.HandleFunc("/savescore", saveScore)
 	http.HandleFunc("/getReadings", getReadings)
+	http.HandleFunc("/saveReadings", saveReadings)
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
@@ -165,15 +180,98 @@ func saveScore(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func saveReadings(w http.ResponseWriter, r *http.Request) {
+	ctx := appengine.NewContext(r)
+	w.Header().Set("Content-Type", "application/json")
+	log.Infof(ctx, "Request")
+	user := user.Current(ctx)
+	if user != nil {
+	    log.Infof(ctx, "Updating readings for user"+ user.String())
+
+		entity := new(UserReadings)
+		key := datastore.NewKey(ctx, "UserReadings", user.String(), 0, nil)
+		datastore.Get(ctx, key, entity)
+
+		testKeys, _ := r.URL.Query()["key"]
+		testKey := testKeys[0]
+
+		audioCompleteParam := r.URL.Query()["audioComplete"]
+		completedParam := r.URL.Query()["completed"]
+		scoreParam := r.URL.Query()["score"]
+
+		readingTests := entity.ReadingTests
+		var readingTestsNew []ReadingTest
+	    log.Infof(ctx, "current tests "+ strconv.Itoa(len(readingTests)))
+		
+		readingTest := ReadingTest{};
+
+	    for _, elem := range readingTests {
+	        if(elem.TestKey == testKey) {
+	        	readingTest = elem;
+	        } else{
+	        	readingTestsNew = append(readingTestsNew, elem)
+	        }
+	    }
+
+
+	    audioComplete, _ := strconv.ParseBool(audioCompleteParam[0]) 
+	    completed, _ := strconv.ParseBool(completedParam[0]) 
+		score, _ := strconv.ParseInt(scoreParam[0], 0, 64)
+
+	  
+
+	    readingTest.TestKey = testKey;
+	    readingTest.AudioComplete = audioComplete;
+	    readingTest.Score = score;
+	    readingTest.Completed = completed;
+
+	    readingTestsNew = append(readingTestsNew, readingTest)
+
+	    entity.UserName = user.String()
+	    entity.ReadingTests = readingTestsNew
+	    entityjson, _ := json.Marshal(readingTestsNew)
+	    log.Infof(ctx, "Updating tests "+ string(entityjson))
+		datastore.Put(ctx, key, entity)
+	} else {
+		log.Infof(ctx, "User not logged in")
+	}
+}
+
 func getReadings(w http.ResponseWriter, r *http.Request) {
 	ctx := appengine.NewContext(r)
+	user := user.Current(ctx)
 	w.Header().Set("Content-Type", "application/json")	
 	log.Infof(ctx, "Reading the readings from json")
 	var jsonBytes = getJSON()
 	var readings []Reading;
     json.Unmarshal(jsonBytes, &readings);
     log.Infof(ctx, "Read %d Readings.",len(readings))
-    out, _ := json.Marshal(readings)
+
+	entity := new(UserReadings)
+	key := datastore.NewKey(ctx, "UserReadings", user.String(), 0, nil)
+	datastore.Get(ctx, key, entity)
+
+	readingMap := make(map[string]ReadingTest)
+
+	for _, elem := range entity.ReadingTests {
+		readingMap[elem.TestKey] = elem
+    }
+
+	var readingsResponse []Reading;
+    for _, readingElem := range readings {
+    	userReading, ok := readingMap[readingElem.Key]
+    	if(ok) {
+    		if(userReading.AudioComplete){
+    			readingElem.AudioComplete = true;
+    		}
+    		if(userReading.Completed) {
+    			readingElem.Completed = true
+    		}
+    	}
+    	readingsResponse = append(readingsResponse, readingElem)
+    }
+
+    out, _ := json.Marshal(readingsResponse)
     w.Write(out);
 }
 
