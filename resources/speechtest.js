@@ -28,6 +28,9 @@ function setupReadings() {
     $.ajax({
         url: "getReadings",
         success: function(result) {
+            for(var i = mydropdown.options.length - 1 ; i >= 1 ; i--){
+                mydropdown.remove(i);
+            }
             //alert(JSON.stringify(result))
             for (var i = 0; i < result.length; i++) {
                 var key = result[i].key;
