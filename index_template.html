@@ -177,20 +177,23 @@
     </center>
     <h4 id="qtitle"></h4>
     <hr>
-    <h5 id="altaudiotext"></h5>
-    <video preload="none" id="audioPlayer" class="video-js vjs-default-skin" controls preload="auto" 
-      width="400" height="70" poster="" data-setup='{}' >
-      <source id='audioSource'   type='audio/mp3'/>
-    </video>
-    <div id='questions'>
+    <div id="playerPanel">
+        <h5 id="altaudiotext"></h5>
+        <video preload="none" id="audioPlayer" class="video-js vjs-default-skin" controls preload="auto" 
+          width="400" height="70" poster="" data-setup='{}' >
+          <source id='audioSource'   type='audio/mp3'/>
+        </video>
+    </div>
+    <div id='questions' style="display:none">
         <h5 id=question></h5>
         <h6 id="optionLabel">Options</h6>
         <form id="options">   
         </form>
         <input type="hidden" id="answer">    
-        <button id="submitAns" disabled="disabled" onclick="submitAns()" type="button" class="btn btn-primary btn-md">Submit
+        <button id="submitAns" disabled="disabled" onclick="submitAns()" type="button" class="btn btn-primary btn-md">Next
         </button>
     </div>
+    <div id='scorePanel' style="display:none"></div>
 </div>
 <div id="module3" class="tabcontent">
     Coming Soonish....

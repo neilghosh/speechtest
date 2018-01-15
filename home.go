@@ -230,6 +230,8 @@ func saveReadings(w http.ResponseWriter, r *http.Request) {
 	    entityjson, _ := json.Marshal(readingTestsNew)
 	    log.Infof(ctx, "Updating tests "+ string(entityjson))
 		datastore.Put(ctx, key, entity)
+		out, _ := json.Marshal(entity)
+    	w.Write(out);
 	} else {
 		log.Infof(ctx, "User not logged in")
 	}

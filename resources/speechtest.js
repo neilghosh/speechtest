@@ -48,6 +48,7 @@ function setupReadings() {
     });
 
     mydropdown.onchange = function() {
+        $("#scorePanel").hide();
         var key = this.value;
         var reading = globalReadings[key]
         questionNo = 0;
@@ -59,6 +60,7 @@ function setupReadings() {
             video.src('resources/audio/' + reading.Audio);
             //source.src = 'resources/audio/'+reading.Audio;
             video.on("ended", funcName = function() {
+                $("#playerPanel").hide();
                 saveReadings(key, true, 0, false);
                 showQuestions(reading.questions, questionNo);
                 document.getElementById('audioPlayer').style.visibility = 'hidden';
@@ -72,7 +74,8 @@ function setupReadings() {
                 document.getElementById('altaudiotext').innerHTML = 'Click play button to listen to the audio clip.';
                 document.getElementById('audioPlayer').style.visibility = 'visible';
             }
-            //audio.load(); //call this to just preload the audio without playing       
+            //audio.load(); //call this to just preload the audio without playing     
+            $("#playerPanel").show();  
         }
     }
 }
@@ -106,16 +109,25 @@ function showQuestions(questions, i) {
         foo.appendChild(br);
     }
     document.getElementById("submitAns").disabled = false;
+    var key = document.getElementById('ListeningTests').value;
+    var totalQuestions = globalReadings[key].questions.length;
+    if(questionNo+1 == totalQuestions){ //last question
+      //Change the next button to submit 
+     $("#submitAns").html('Submit'); //versions newer than 1.6
+    }
+    $("#questions").show();
 }
 
 function submitAns() {
     var userAns =  $("input[name=option]:checked").val();
     var answer = document.getElementById("answer").value;
     var key = document.getElementById('ListeningTests').value;
+
     if(userAns == answer){
         listningScore++;
     }
-    if(++questionNo < globalReadings[key].questions.length) {
+    var totalQuestions = globalReadings[key].questions.length;
+    if(++questionNo < totalQuestions) {
         nextQuestion();
     } else{
         saveModule2Score(key,listningScore);
@@ -248,8 +260,38 @@ function getScores() {
 
 function saveReadings(key, audioComplete, score, completed) {
     $.get("/saveReadings?audioComplete="+audioComplete+"&key="+key+"&score="+score+"&completed="+completed, function(data) {
-        clearOptions();
+        if(completed) {
+            clearOptions();
+            showScore(data);
+            //Disable current test 
+            var currentKey = document.getElementById('ListeningTests').value;
+//            $('#dropdown option[value="'+currentKey+'"]').prop('disabled', 'disabled');
+            $('#ListeningTests option:contains("'+currentKey+'")').attr("disabled","disabled");
+
+        }
     });
+}
+
+function showScore(data){
+    $("#questions").hide();
+    var currentScore;
+    var currentKey = document.getElementById('ListeningTests').value;
+    var tests = data.ReadingTests;
+    var size = tests.length;
+    for (var i = 0; i < size; i++) {
+        var entity = tests[i];
+        key = entity.TestKey;
+        if(currentKey == key) {
+            currentScore = entity.Score;
+        }
+    }
+    var totalQuestions = globalReadings[key].questions.length;
+    var pct = Math.round(currentScore*100/totalQuestions);
+    var result;
+    var color = pct < pass ? (result='failed','red') : (result='passed', 'green');
+
+    $("#scorePanel").html('You <font color="'+color+'"><b>'+result+'!</b></font>.<br>Your score for test <b>'+currentKey+'</b> is <font color="'+color+'"><b>'+pct+'</b></font>');
+    $("#scorePanel").show();
 }
 
 function toggle() {
@@ -412,3 +454,4 @@ currVPos = 0;
     var listningScore = 0;
     var questionNo = 0;
     var globalReadings = [];
+    var pass = 80;
