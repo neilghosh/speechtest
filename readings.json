@@ -23,10 +23,10 @@
         "answer": "C"
       },
       {
-        "question": "What disadvantage 3D printing may have?",
+        "question": "What disadvantage may 3D printing have?",
         "options": {
-          "A": "Waste of materials, e.g., polymer and ceramic ",
-          "B": "Slow in producing simmple parts",
+          "A": "Waste of materials, e.g., polymer and ceramic",
+          "B": "Slow in mass-producing simple parts",
           "C": "Special tooling needed for each CAD model"
         },
         "answer": "B"
@@ -42,7 +42,7 @@
         "question": "What is the advantage of Object-Oriented Programming over procedural programming (PP)",
         "options": {
           "A": "It runs faster than procedural programming",
-          "B": "Code reusability saves time in development",
+          "B": "Code re-usability saves time in development",
           "C": "Code is always smaller and more efficient than in PP"
         },
         "answer": "B"
@@ -60,7 +60,7 @@
         "question": "What is polymorphism in OOP",
         "options": {
           "A": "The same method in different Objects (of the same class) can perform different tasks",
-          "B": "SDifferent classes derived from the same parent class can easily morph/transform into each other",
+          "B": "Different classes derived from the same parent class can easily morph/transform into each other",
           "C": "An object derived from a class can transform into another object during runtime or compiling"
         },
         "answer": "A"
@@ -69,7 +69,7 @@
   },
   {
     "key": "Test3",
-    "title": "Artificial Intelligence Based medical Diagnosis App",
+    "title": "Artificial Intelligence Based Medical Diagnosis App",
     "audio": "3_AI-basedMedicalDiagnosis.mp3",
     "questions": [
       {
@@ -98,6 +98,74 @@
           "C": "An AI program to analyze Human DNA"
         },
         "answer": "B"
+      }
+    ]
+  },
+  {
+    "key": "Test4",
+    "title": "Bill Gates talks about Gates Foundation",
+    "audio": "4_BillGates_InterviewAboutGatesFoundation.mp3",
+    "questions": [
+      {
+        "question": "The next 15 years the foundation will focus on",
+        "options": {
+          "A": "Future technologies such as Artificial Intelligence",
+          "B": "Building new roads, schools, and Hospitals",
+          "C": "Healthcare, education, farming, and banking"
+        },
+        "answer": "C"
+      },
+      {
+        "question": "Gates Foundation spends most of the money on",
+        "options": {
+          "A": "Healthcare, free vaccine distribution, etc.",
+          "B": "Education of women and farmers in Poorer countries",
+          "C": "Better seeds development to solve the hunger problem in Africa"
+        },
+        "answer": "A"
+      },
+      {
+        "question": "About gender equality in education, Bill gates thinks",
+        "options": {
+          "A": "Parents should invest equally on boys' and girls' education",
+          "B": "At Ph.D. level in sciences, there are more women than men",
+          "C": "In the US schools, there are more boys than girls"
+        },
+        "answer": "A"
+      }
+    ]
+  },
+  {
+    "key": "Test5",
+    "title": "Elon Musk's tips on creating a successful company",
+    "audio": "5_ElonMusk_CreatingASuccessfulComany.mp3",
+    "questions": [
+      {
+        "question": "Elon Musk says building a successful company",
+        "options": {
+          "A": "depends on having the first idea absolutely right",
+          "B": "can be quite painful",
+          "C": "is something every one should try as entrepreneurs"
+        },
+        "answer": "B"
+      },
+      {
+        "question": "To make a successful company",
+        "options": {
+          "A": "one must create something that customers love",
+          "B": "the share-holders and investors should want you to succeed",
+          "C": "one must make products cheaper and faster than the competitors"
+        },
+        "answer": "A"
+      },
+      {
+        "question": "Edison said to build a great company",
+        "options": {
+          "A": "it takes 1% aspiration 99% inspiration",
+          "B": "one must accept criticisms from the customers",
+          "C": "it takes 1% inspiration 99% perspiration"
+        },
+        "answer": "C"
       }
     ]
   }

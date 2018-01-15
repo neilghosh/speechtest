@@ -216,9 +216,7 @@ func saveReadings(w http.ResponseWriter, r *http.Request) {
 
 	    audioComplete, _ := strconv.ParseBool(audioCompleteParam[0]) 
 	    completed, _ := strconv.ParseBool(completedParam[0]) 
-		score, _ := strconv.ParseInt(scoreParam[0], 0, 64)
-
-	  
+		score, _ := strconv.ParseInt(scoreParam[0], 0, 64)  
 
 	    readingTest.TestKey = testKey;
 	    readingTest.AudioComplete = audioComplete;
