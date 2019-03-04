@@ -10,7 +10,7 @@ steps:
   args: ['get', 'golang.org/x/net/context']
   env: ['GOPATH=go']
 - name: 'gcr.io/cloud-builders/gcloud'
-  args: ['app', 'deploy','go/${_APP}']
+  args: ['app', 'deploy', '${_NOPROMOTE}' ,'go/${_APP}']
   env: ['GOPATH=go']
 artifacts:
   objects:
