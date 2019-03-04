@@ -20,3 +20,4 @@ steps:
 artifacts:
   objects:
     location: 'gs://${_BUCKET}/'
+    paths: "${_APP}/home.go"
