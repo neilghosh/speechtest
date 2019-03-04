@@ -1,6 +1,7 @@
 substitutions:
   _APP: speechtest
   _BUCKET: cloud-build-speechtest
+  _NOPROMOTE: --promote
 
 steps:
 - name: 'gcr.io/cloud-builders/go'
