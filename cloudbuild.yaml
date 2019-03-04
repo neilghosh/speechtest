@@ -17,3 +17,5 @@ artifacts:
   objects:
     location: 'gs://${_BUCKET}/'
     paths: ['go/${_APP}/home.go']
+
+##TODO the folder structure in source control does not have to be go/speechtest
