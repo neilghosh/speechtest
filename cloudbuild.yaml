@@ -1,0 +1,23 @@
+substitutions:
+  _APP: .
+  _BUCKET: cloud-build-speechtest
+
+steps:
+- name: "gcr.io/cloud-builders/go"
+  args:
+  - get
+  - "google.golang.org/appengine"
+  env: 
+  - "GOPATH=go"
+- name: "gcr.io/cloud-builders/gcloud"
+  args:
+  - app
+  - deploy
+  - "${_APP}"
+  env:
+  - "GOPATH=go"
+
+artifacts:
+  objects:
+    location: 'gs://${_BUCKET}/'
+paths: "${_APP}/home.go"
