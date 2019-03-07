@@ -1,5 +1,5 @@
 # speechtest
-Test Spoken English 
+Test Spoken English Skills
 
 ## Live Demo
 https://speechtest-dot-english-2020.appspot.com/
