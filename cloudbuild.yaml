@@ -1,0 +1,21 @@
+substitutions:
+  _APP: speechtest
+  _BUCKET: cloud-build-speechtest
+  _NOPROMOTE: --promote
+
+steps:
+- name: 'gcr.io/cloud-builders/go'
+  args: ['get', 'google.golang.org/appengine']
+  env: ['GOPATH=go']
+- name: 'gcr.io/cloud-builders/go'
+  args: ['get', 'golang.org/x/net/context']
+  env: ['GOPATH=go']
+- name: 'gcr.io/cloud-builders/gcloud'
+  args: ['app', 'deploy', '${_NOPROMOTE}' ,'go/${_APP}']
+  env: ['GOPATH=go']
+artifacts:
+  objects:
+    location: 'gs://${_BUCKET}/'
+    paths: ['go/${_APP}/home.go']
+
+##TODO the folder structure in source control does not have to be go/speechtest

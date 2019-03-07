@@ -1,0 +1,21 @@
+Test1. 
+3D Printing
+Listen to the audio carefully then think and check/click only one correct statement for each of the following questions
+
+1. What is 3D Printing normally used for?
+o A - Specialized parts
+o B - Rocket Engines
+o C - Cost savings in mass-production
+Answer A
+
+2. What process does a 3D printer use?
+o A - Machining from solid metal block
+o B - Casting from liquid metal alloy
+o C - Adding layers to build a part
+Answer C
+
+3. What disadvantage 3D printing may have?
+o A - Waste of materials, e.g., polymer and ceramic
+o B - Slow in producing simmple parts
+o C - Special tooling needed for each CAD model
+Answer B
