@@ -48,5 +48,3 @@ gcloud builds submit --config cloudbuild.yaml . --substitutions=_NOPROMOTE="--no
 ```
 ## Add Build Status Notification 
 https://github.com/pixiteapps/android-cloud-build/tree/master/github-status
-
-Author - neil.ghosh@gmail.com
