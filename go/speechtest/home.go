@@ -282,7 +282,7 @@ func admin(w http.ResponseWriter, r *http.Request) {
 	//user := user.Current(ctx)
 	cursorStr := r.URL.Query().Get("cursorStr")
 	log.Infof(ctx, "Reading Reading All Scores")
-	const pageSize = 2
+	const pageSize = 20
 	query := datastore.NewQuery("UserScores").Limit(pageSize)
 	if cursorStr != "" {
 					cursor, err := datastore.DecodeCursor(cursorStr)
