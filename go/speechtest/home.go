@@ -9,6 +9,7 @@ import (
 	"google.golang.org/appengine/user"
 	"google.golang.org/appengine/datastore"
 	"google.golang.org/appengine/log"
+	"google.golang.org/api/iterator"
 	"strconv"
 	"fmt"
 	"encoding/json"
@@ -69,6 +70,7 @@ func init() {
 	http.HandleFunc("/savescore", saveScore)
 	http.HandleFunc("/getReadings", getReadings)
 	http.HandleFunc("/saveReadings", saveReadings)
+	http.HandleFunc("/admin", admin)
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
@@ -273,6 +275,64 @@ func getReadings(w http.ResponseWriter, r *http.Request) {
 
     out, _ := json.Marshal(readingsResponse)
     w.Write(out);
+}
+
+func admin(w http.ResponseWriter, r *http.Request) {
+	ctx := appengine.NewContext(r)
+	//user := user.Current(ctx)
+	cursorStr := r.URL.Query().Get("cursorStr")
+	log.Infof(ctx, "Reading Reading All Scores")
+	const pageSize = 20
+	query := datastore.NewQuery("UserScores").Limit(pageSize)
+	if cursorStr != "" {
+					cursor, err := datastore.DecodeCursor(cursorStr)
+					if err != nil {
+									log.Errorf(ctx, "Bad cursor %q: %v", cursorStr, err)
+					}
+					query = query.Start(cursor)
+	}
+	
+	// Read the tasks.
+	var userScores []UserScores
+	var userScore UserScores
+	it := query.Run(ctx)
+	_, err := it.Next(&userScore)
+	for err == nil {
+					userScores = append(userScores, userScore)
+					_, err = it.Next(&userScore)
+	}
+	if err != iterator.Done {
+					log.Errorf(ctx, "Failed fetching results: %v", err)
+	}
+	
+	// Get the cursor for the next page of results.
+	nextCursor, err := it.Cursor()	 
+
+	//json.NewEncoder(w).Encode(userScores)
+	b, err := json.Marshal(userScores)
+	if err != nil {
+		log.Errorf(ctx, "%v", err)
+		return
+	}
+	var response = `{ "Data":`+ string(b) + `, "CursorStr" : "`+ nextCursor.String() + `"}`
+	// w.Header().Set("Content-Type", "application/json")	
+	// w.Write([]byte(response))
+
+	type AdminResponse struct {
+    Data []UserScores
+    CursorStr string
+	}
+	var adminResponse AdminResponse
+
+	err1 := json.Unmarshal([]byte(response), &adminResponse)
+	if err != nil {
+		log.Errorf(ctx, "%V", err1)
+		return
+	}
+	log.Infof(ctx, "%v", adminResponse.CursorStr)
+	w.Header().Set("Content-Type", "text/html")
+	t := template.Must(template.New("admin_template.html").ParseFiles("admin_template.html"))
+	t.ExecuteTemplate(w, "admin_template.html", adminResponse)  // merge.
 }
 
 func getJSON() []byte{

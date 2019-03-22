@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <title>Admin Dashboard</title>
+</head>
+
+<body>
+  <p>
+    Scores of all users
+  </p>
+  <table class="table table-striped table-bordered">
+    <tr>
+      <td>User Name</td>
+      <td>Scores</td>
+    </tr>
+    {{ with .Data }}
+    {{ range . }}
+    <tr>
+      <td>{{ .UserName }}</td>
+      {{ with .Scores }}
+      {{ range . }}
+      <td>{{ .Score}}</td>
+      {{ end }}
+      {{ end }}
+    </tr>
+    {{ end }}
+    {{ end }}
+
+  </table>
+  <form action="admin?cursorStr={{ .CursorStr }}" method="post">
+    <input type="submit" name="Next" value="Next" />
+  </form>
+</body>
+
+</html>
