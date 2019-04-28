@@ -1,4 +1,4 @@
-package hello
+package speechtest
 
 import (
 	"time"
@@ -297,8 +297,11 @@ func admin(w http.ResponseWriter, r *http.Request) {
 	var userScore UserScores
 	it := query.Run(ctx)
 	_, err := it.Next(&userScore)
+
 	for err == nil {
 					userScores = append(userScores, userScore)
+					log.Infof(ctx, "The current user's score : %v", userScore)
+					userScore = UserScores{} // I don't know why I have to do this. The next line should have just overrite
 					_, err = it.Next(&userScore)
 	}
 	if err != iterator.Done {
@@ -308,15 +311,12 @@ func admin(w http.ResponseWriter, r *http.Request) {
 	// Get the cursor for the next page of results.
 	nextCursor, err := it.Cursor()	 
 
-	//json.NewEncoder(w).Encode(userScores)
 	b, err := json.Marshal(userScores)
 	if err != nil {
 		log.Errorf(ctx, "%v", err)
 		return
 	}
 	var response = `{ "Data":`+ string(b) + `, "CursorStr" : "`+ nextCursor.String() + `"}`
-	// w.Header().Set("Content-Type", "application/json")	
-	// w.Write([]byte(response))
 
 	type AdminResponse struct {
     Data []UserScores
