@@ -279,7 +279,7 @@ func getReadings(w http.ResponseWriter, r *http.Request) {
 
 func admin(w http.ResponseWriter, r *http.Request) {
 	ctx := appengine.NewContext(r)
-	//user := user.Current(ctx)
+
 	cursorStr := r.URL.Query().Get("cursorStr")
 	log.Infof(ctx, "Reading Reading All Scores")
 	const pageSize = 20
