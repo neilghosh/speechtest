@@ -95,8 +95,12 @@
             <option value="{{ $value }}">{{ $key }}</option>
             {{ end }}
         </select>
+		<!--
         <textarea class="form-control input-lg" id="textToRead" cols="60" rows="10"
                   placeholder="Welcome to IEOSD Skill Test (Spoken English)-Use this test only with Google Chrome browser - Product by IEOSD- Please paste your text or select from above list, and press the button `Click to Speak`. Once done, Click to Stop. Then Click on Evaluate button to see your score is below. If your score is less than 60%, you should consider using our software Spoken English-2020 and Spoken English for Engineers and Scientists to become fluent in professional English."></textarea>
+		-->
+		<textarea class="form-control input-lg" id="textToRead" cols="60" rows="10"
+                  placeholder="Welcome to IEOSD Skill Test (Spoken English)-Use this test only with Google Chrome browser - Product by IEOSD- Please paste your text or select from above list, and press the button `Click to Speak`. Once done, Click to Stop. Then Click on Evaluate button to see your score is below."></textarea>
         {{ else }}
         <button type="button" class="btn btn-primary btn-md" onclick="location.href='{{ .SignInUrl }}'">Sign in to enter
             text
@@ -104,8 +108,9 @@
         {{ end }}
         <br>
         <p><samp id="p2"></samp></p>
+		<!--
         <h5>If your score is less than 60%, you should consider using our software Spoken English-2020 and Spoken English
-            for Engineers and Scientists to become fluent in professional English.</h5>
+            for Engineers and Scientists to become fluent in professional English.</h5> -->
         <br>
         <br>
     </div>
@@ -199,11 +204,6 @@
     Coming Soonish....
 </div>
 <hr>
-
-<br>
-
-<br>
-<br>
 <center>Concept by IEOSD TEAM - "All rights reserved" -IEOSD
 </center>
     <!--
