@@ -13,18 +13,11 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/gorilla/sessions"
 	"golang.org/x/net/context"
 	"google.golang.org/api/iterator"
 	"google.golang.org/appengine"
 	"google.golang.org/appengine/datastore"
 	"google.golang.org/appengine/user"
-)
-
-var (
-	// key must be 16, 24 or 32 bytes long (AES-128, AES-192 or AES-256)
-	key   = []byte("super-secret-key")
-	store = sessions.NewCookieStore(key)
 )
 
 type UserSession struct {
@@ -177,6 +170,7 @@ func saveScore(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Request")
 	user := getUser(r)
 	if user != "" {
+        log.Printf("user :"+user)
 		entity := new(UserScores)
 		key := datastore.NewKey(ctx, "UserScores", user, 0, nil)
 		datastore.Get(ctx, key, entity)
@@ -403,6 +397,7 @@ func main() {
 	fs := http.FileServer(http.Dir("resources"))
 	http.Handle("/resources/", http.StripPrefix("/resources/", fs))
 
+    
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
