@@ -73,7 +73,10 @@ Enable Appengine API and Add IAM Roles
 ```
 
 Submit the build or trigger it from cloud build console or checkin any file in any branch
+
 ```
 gcloud builds submit --config cloudbuild.yaml . --substitutions=_NOPROMOTE="--no-promote"
 
 ```
+## Add Build Status Notification 
+https://github.com/pixiteapps/android-cloud-build/tree/master/github-status
